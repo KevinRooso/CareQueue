@@ -39,7 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(properties = "hibernate.generate_statistics=true")
+@SpringBootTest(properties = "spring.jpa.properties.hibernate.generate_statistics=true")
 @AutoConfigureMockMvc
 @Import(TestcontainersConfiguration.class)
 @Tag("integration")
@@ -133,7 +133,8 @@ class ApiIntegrationTest {
 		long count = countListStatements(stats, 5);
 		long count25 = countListStatements(stats, 25);
 
-		assertThat(count).isEqualTo(count25);
+		// > 0 proves statistics are actually on — a 0==0 comparison was vacuous.
+		assertThat(count).isPositive().isEqualTo(count25);
 		assertThat(count).isLessThanOrEqualTo(2);
 	}
 
