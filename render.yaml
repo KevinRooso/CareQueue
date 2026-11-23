@@ -1,0 +1,58 @@
+# Render Blueprint: one Docker web service (API + React UI) and one Postgres database, both free.
+# Render dashboard → New → Blueprint → pick this repo → it reads this file. See README "Deploy to Render".
+# Secrets are never in this file: the three `sync: false` values are typed into the dashboard once.
+# Schema: https://render.com/schema/render.yaml.json
+
+databases:
+  - name: carequeue-db
+    databaseName: carequeue
+    user: carequeue
+    plan: free # expires 30 days after creation (Render free-tier rule)
+    postgresMajorVersion: "18"
+    region: frankfurt
+
+services:
+  - type: web
+    name: carequeue
+    runtime: docker
+    plan: free # 512 MB RAM, 0.1 CPU, sleeps after 15 min without traffic
+    region: frankfurt # same region as the database, so they talk over Render's private network
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /actuator/health
+    autoDeployTrigger: checksPass # deploy a new master commit only after GitHub Actions CI passes
+    envVars:
+      # Render gives host, port and database name separately; application.yml builds the JDBC URL
+      # from DB_HOST / DB_PORT / DB_NAME when SPRING_DATASOURCE_URL is not set.
+      - key: DB_HOST
+        fromDatabase:
+          name: carequeue-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: carequeue-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: carequeue-db
+          property: database
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: carequeue-db
+          property: user
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: carequeue-db
+          property: password
+      # Seed the synthetic demo referrals on first start, so the live link has something to show.
+      - key: SPRING_PROFILES_ACTIVE
+        value: demo
+      # Groq model for AI triage (not a secret).
+      - key: CAREQUEUE_TRIAGE_MODEL
+        value: qwen/qwen3.8-27b
+      # Secrets: Render asks for these when the Blueprint is created; they never live in git.
+      - key: CAREQUEUE_NURSE_PASSWORD
+        sync: false
+      - key: CAREQUEUE_MANAGER_PASSWORD
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false

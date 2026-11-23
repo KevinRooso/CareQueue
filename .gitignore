@@ -5,6 +5,8 @@ reports/
 backend/target/
 frontend/node_modules/
 frontend/dist/
+# The Docker build copies frontend/dist here; a local copy must never be committed.
+backend/src/main/resources/static/
 docs/
 .claude/
 .idea/

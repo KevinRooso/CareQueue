@@ -6,7 +6,9 @@ spring:
     # Optional: ignored when the file does not exist (CI, Docker, tests in a fresh checkout).
     import: optional:file:../.env[.properties]
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/carequeue}
+    # Full URL (docker compose, local overrides) or, when it is not set, built from DB_HOST / DB_PORT /
+    # DB_NAME: Render's Blueprint exposes the database host, port and name separately (render.yaml).
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:carequeue}}
     username: ${SPRING_DATASOURCE_USERNAME:carequeue}
     password: ${SPRING_DATASOURCE_PASSWORD:}
   jpa:
@@ -56,6 +58,15 @@ spring:
       audio:
         speech: none
         transcription: none
+
+server:
+  # Render injects PORT; locally and in docker compose it is 8080.
+  port: ${PORT:8080}
+  # Render (and any reverse proxy) terminates TLS and sends X-Forwarded-Proto/Host. "framework" makes
+  # Spring see the original https request (correct redirects, HSTS header) and strips those headers.
+  forward-headers-strategy: framework
+  # Finish in-flight requests on SIGTERM (a redeploy) instead of cutting them off.
+  shutdown: graceful
 
 springdoc:
   swagger-ui:

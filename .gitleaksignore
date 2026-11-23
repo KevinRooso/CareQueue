@@ -1,0 +1,9 @@
+# Gitleaks false positives, one fingerprint (commit:file:rule:line) each, so nothing else is hidden.
+# Format: https://github.com/gitleaks/gitleaks#gitleaksignore
+
+# README example: `curl -u nurse:local-nurse-pw` uses the placeholder password the reader sets locally; not a real credential.
+38d406968c73513e77ef8df7b35176c042a002b5:README.md:curl-auth-user:58
+# README example: `curl -u manager:local-manager-pw` – same placeholder demo password, set by the reader; not a real credential.
+bb1a22ee24892457e5a2daa3fab627d9832e65de:README.md:curl-auth-user:65
+# Test assertion on a Groq model name ("llama-3.3-70b-versatile") in an eval file name, not an API key.
+1138363fc17161543a2eaf8168b7430aa9bdc2a7:backend/src/test/java/com/carequeue/triage/eval/EvalScoresTest.java:generic-api-key:76
