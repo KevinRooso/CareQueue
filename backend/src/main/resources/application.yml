@@ -17,6 +17,13 @@ spring:
       org.hibernate.envers.audit_table_suffix: _aud
       org.hibernate.envers.revision_field_name: rev
       org.hibernate.envers.revision_type_field_name: revtype
+  mvc:
+    problemdetails:
+      enabled: true
+  data:
+    web:
+      pageable:
+        max-page-size: 100
   ai:
     # AI triage talks to Groq through Spring AI's OpenAI-compatible client (ADR-007).
     openai:
@@ -50,7 +57,20 @@ spring:
         speech: none
         transcription: none
 
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics
+
 carequeue:
+  security:
+    nurse-password: ${CAREQUEUE_NURSE_PASSWORD:}
+    manager-password: ${CAREQUEUE_MANAGER_PASSWORD:}
   triage:
     # Prompt file in src/main/resources/prompts/. Changing the prompt = a new version file.
     prompt-version: triage-v1

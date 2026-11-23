@@ -45,6 +45,20 @@ cd backend && ./mvnw spring-boot:run -Dspring-boot.run.profiles=demo
 
 The `demo` profile seeds **25 synthetic referrals** (all statuses, all three reference clinics) on first start — perfect for poking at the database. Re-running is a no-op.
 
+## Try the API
+
+Running locally also needs the two demo-user passwords:
+
+```bash
+export CAREQUEUE_NURSE_PASSWORD=local-nurse-pw
+export CAREQUEUE_MANAGER_PASSWORD=local-manager-pw
+```
+
+- **Swagger UI:** http://localhost:8080/swagger-ui.html — click **Authorize** and log in as `nurse` (clinician) or `manager` (admin), then "Try it out" on any endpoint. The OpenAPI JSON is at `/v3/api-docs`.
+- **curl:** `curl -u nurse:local-nurse-pw 'http://localhost:8080/api/waiting-list?clinicId=1'`
+
+All data is synthetic. Users: `nurse` → `CLINICIAN`, `manager` → `ADMIN` (implies `CLINICIAN`).
+
 ## Project layout
 ```
 backend/    Spring Boot application (Maven wrapper: ./mvnw)
