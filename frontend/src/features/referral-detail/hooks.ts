@@ -21,6 +21,16 @@ export function useReferral(id: number) {
   })
 }
 
+export const referralHistoryKey = (id: number) => ['referral-history', id] as const
+
+/** US-9 (ADMIN): the referral's audit trail — every revision with its field changes. */
+export function useReferralHistory(id: number) {
+  return useQuery({
+    queryKey: referralHistoryKey(id),
+    queryFn: ({ signal }) => api.getReferralHistory(id, signal),
+  })
+}
+
 /**
  * Callbacks for the component that runs a command. They are passed to `useMutation` itself
  * (not to `mutate()`), because TanStack Query skips `mutate()` callbacks when the component
@@ -35,6 +45,8 @@ export interface CommandCallbacks<TData> {
 function invalidateLists(queryClient: QueryClient) {
   void queryClient.invalidateQueries({ queryKey: ['referrals'] })
   void queryClient.invalidateQueries({ queryKey: ['waiting-list'] })
+  // Any successful command writes a new audit revision.
+  void queryClient.invalidateQueries({ queryKey: ['referral-history'] })
 }
 
 /**

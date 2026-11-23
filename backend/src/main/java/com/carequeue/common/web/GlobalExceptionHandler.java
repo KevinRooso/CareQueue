@@ -7,6 +7,7 @@ import com.carequeue.common.error.StaleVersionException;
 import com.carequeue.referral.domain.InvalidStatusTransitionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.core.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
@@ -37,7 +38,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		ProblemDetail pd = ProblemDetail.forStatusAndDetail(status, detail);
 		pd.setTitle(title);
 		pd.setType(URI.create("about:blank"));
+		withRequestId(pd);
 		return pd;
+	}
+
+	private void withRequestId(ProblemDetail pd) {
+		String requestId = MDC.get(RequestIdFilter.MDC_KEY);
+		if (requestId != null) {
+			pd.setProperty(RequestIdFilter.MDC_KEY, requestId);
+		}
 	}
 
 	@ExceptionHandler(NotFoundException.class)
@@ -115,6 +124,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		// AccessDeniedHandler can see them — map them to the same 403 shape here.
 		return problem(HttpStatus.FORBIDDEN, "Forbidden",
 				"You do not have permission to perform this action.");
+	}
+
+	@Override
+	protected org.springframework.http.ResponseEntity<Object> handleExceptionInternal(
+			Exception ex, Object body, org.springframework.http.HttpHeaders headers,
+			org.springframework.http.HttpStatusCode statusCode, WebRequest request) {
+		org.springframework.http.ResponseEntity<Object> response =
+				super.handleExceptionInternal(ex, body, headers, statusCode, request);
+		if (response != null && response.getBody() instanceof ProblemDetail pd) {
+			withRequestId(pd);
+		}
+		return response;
 	}
 
 	@ExceptionHandler(Exception.class)

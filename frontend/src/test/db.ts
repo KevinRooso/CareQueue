@@ -6,6 +6,7 @@ import type {
   DeadLetter,
   PatientSummary,
   ReferralDetail,
+  ReferralRevision,
 } from '../api/types'
 
 export const CLINICS: ClinicSummary[] = [
@@ -157,4 +158,66 @@ export function resetDb() {
 
 export function findReferral(id: number): ReferralDetail | undefined {
   return db.referrals.find((r) => r.id === id)
+}
+
+/**
+ * A plausible audit trail for a referral, mirroring what the Envers-backed
+ * `GET /referrals/{id}/history` returns: one CREATED row plus one UPDATED row
+ * per state the referral has passed through.
+ */
+export function referralHistory(id: number): ReferralRevision[] | undefined {
+  const r = findReferral(id)
+  if (!r) return undefined
+  const revisions: ReferralRevision[] = [
+    {
+      revision: 1,
+      timestamp: r.receivedAt,
+      username: 'system',
+      type: 'CREATED',
+      changes: [{ field: 'status', from: null, to: 'RECEIVED' }],
+    },
+  ]
+  if (r.aiSummary) {
+    revisions.push({
+      revision: 2,
+      timestamp: r.receivedAt,
+      username: 'nurse',
+      type: 'UPDATED',
+      changes: [
+        { field: 'status', from: 'RECEIVED', to: 'AI_SUGGESTED' },
+        { field: 'suggestedPriority', from: null, to: r.suggestedPriority },
+      ],
+    })
+  }
+  if (r.confirmedPriority) {
+    revisions.push({
+      revision: 3,
+      timestamp: r.triagedAt ?? r.receivedAt,
+      username: r.triagedBy ?? 'nurse',
+      type: 'UPDATED',
+      changes: [
+        { field: 'status', from: 'AI_SUGGESTED', to: 'TRIAGED' },
+        { field: 'confirmedPriority', from: null, to: r.confirmedPriority },
+      ],
+    })
+  }
+  if (r.status === 'BOOKED') {
+    revisions.push({
+      revision: 4,
+      timestamp: r.triagedAt ?? r.receivedAt,
+      username: 'manager',
+      type: 'UPDATED',
+      changes: [{ field: 'status', from: 'TRIAGED', to: 'BOOKED' }],
+    })
+  }
+  if (r.status === 'REJECTED') {
+    revisions.push({
+      revision: 4,
+      timestamp: r.triagedAt ?? r.receivedAt,
+      username: r.triagedBy ?? 'nurse',
+      type: 'UPDATED',
+      changes: [{ field: 'status', from: 'AI_SUGGESTED', to: 'REJECTED' }],
+    })
+  }
+  return revisions
 }

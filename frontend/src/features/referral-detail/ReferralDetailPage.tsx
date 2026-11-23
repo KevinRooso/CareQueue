@@ -14,6 +14,7 @@ import ui from '../../components/ui.module.css'
 import { actionsFor } from './actions'
 import { BookAppointmentForm } from './BookAppointmentForm'
 import { ConfirmTriageForm } from './ConfirmTriageForm'
+import { HistoryPanel } from './HistoryPanel'
 import { useReferral } from './hooks'
 import type { Notice } from './notice'
 import { RejectAction } from './RejectAction'
@@ -241,6 +242,9 @@ function TriageColumn({
           <RejectAction key={referral.version} referral={referral} onNotice={onNotice} />
         </section>
       )}
+
+      {/* US-9: audit trail is ADMIN-only on the server; the panel only mounts for managers. */}
+      {isAdmin && <HistoryPanel referralId={referral.id} />}
     </div>
   )
 }

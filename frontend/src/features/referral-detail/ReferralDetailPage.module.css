@@ -311,3 +311,32 @@
 .rejectQuestion {
   font-weight: 700;
 }
+
+.revisionList {
+  display: grid;
+  gap: var(--space-4);
+  margin: 0;
+  padding-left: var(--space-5);
+}
+
+.revision {
+  padding-left: var(--space-2);
+}
+
+.revisionHead {
+  margin: 0 0 var(--space-1);
+  font-size: var(--text-sm);
+}
+
+.changeList {
+  margin: 0;
+  padding-left: var(--space-4);
+  list-style: none;
+  font-size: var(--text-sm);
+  color: var(--ink-2);
+}
+
+.changeField {
+  font-weight: 600;
+  color: var(--ink);
+}

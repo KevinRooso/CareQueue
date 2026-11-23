@@ -1,8 +1,10 @@
 package com.carequeue.common.security;
 
+import com.carequeue.common.web.RequestIdFilter;
 import tools.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ProblemDetail;
@@ -26,6 +28,10 @@ public class ProblemJsonAccessDeniedHandler implements AccessDeniedHandler {
 		ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN,
 				"You do not have permission to access this endpoint.");
 		problem.setTitle("Forbidden");
+		String requestId = MDC.get(RequestIdFilter.MDC_KEY);
+		if (requestId != null) {
+			problem.setProperty(RequestIdFilter.MDC_KEY, requestId);
+		}
 		response.setStatus(HttpStatus.FORBIDDEN.value());
 		response.setContentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE);
 		objectMapper.writeValue(response.getWriter(), problem);

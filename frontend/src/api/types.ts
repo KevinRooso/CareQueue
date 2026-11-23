@@ -145,6 +145,21 @@ export interface BookAppointmentRequest {
 }
 
 /** One entry of the `errors` array on a 400 / 422 problem */
+export interface FieldChange {
+  field: string
+  from: string | null
+  to: string | null
+}
+
+/** US-9: one row of a referral's audit trail (ADMIN). */
+export interface ReferralRevision {
+  revision: number
+  timestamp: string
+  username: string
+  type: 'CREATED' | 'UPDATED' | 'DELETED'
+  changes: FieldChange[]
+}
+
 export interface FieldError {
   field: string
   message: string
