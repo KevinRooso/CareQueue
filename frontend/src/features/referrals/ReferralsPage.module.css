@@ -1,0 +1,30 @@
+.filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: var(--space-4);
+  max-width: 60rem;
+  margin-bottom: var(--space-6);
+}
+
+.sections {
+  display: grid;
+  gap: var(--space-7);
+}
+
+.section {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.sectionHeader {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.explanation {
+  color: var(--ink-2);
+}
+
+.patient {
+  font-weight: 400;
+}

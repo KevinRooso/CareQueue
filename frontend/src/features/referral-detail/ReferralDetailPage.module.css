@@ -1,0 +1,313 @@
+/*
+ * Referral detail: the GP's letter on the left, the clinician's working column on the right.
+ * Solid lines = facts and decisions. Dashed gentian lines = the advisory AI suggestion.
+ */
+
+.headerBadges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: center;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(22rem, 1fr);
+  gap: var(--space-6);
+  align-items: start;
+}
+
+@media (max-width: 1100px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ---- The letter --------------------------------------------------------------------- */
+
+.letter {
+  display: grid;
+  gap: var(--space-6);
+}
+
+.details {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+  gap: var(--space-4) var(--space-5);
+  margin: 0;
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-control);
+  background: var(--sheet-tint);
+}
+
+.details dt {
+  font-size: var(--text-sm);
+  font-weight: 650;
+  color: var(--ink-2);
+}
+
+.details dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.wide {
+  grid-column: 1 / -1;
+}
+
+.subtle {
+  color: var(--ink-2);
+}
+
+.notesSection {
+  display: grid;
+  gap: var(--space-3);
+}
+
+/* The notes are what the clinician actually reads: larger type, generous leading. */
+.notes {
+  max-width: 68ch;
+  padding-left: var(--space-4);
+  border-left: 3px solid var(--ink);
+  font-size: var(--text-lg);
+  line-height: 1.65;
+  white-space: pre-wrap;
+}
+
+.decision {
+  display: grid;
+  gap: var(--space-3);
+}
+
+/* ---- The working column ------------------------------------------------------------- */
+
+.triage {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.liveRegion:empty {
+  display: none;
+}
+
+.notice {
+  padding: var(--space-3) var(--space-4);
+  border-left: 5px solid var(--gentian);
+  background: var(--gentian-wash);
+  font-weight: 650;
+}
+
+.notice[data-tone='warning'] {
+  border-left-color: var(--urgent);
+  background: var(--urgent-wash);
+}
+
+.panel,
+.panelQuiet {
+  display: grid;
+  gap: var(--space-3);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--rule);
+}
+
+.panelQuiet h2 {
+  font-size: var(--text-md);
+}
+
+.muted {
+  color: var(--ink-2);
+}
+
+/* AI suggestion: dashed, like the suggested priority tag. */
+.suggestion {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5) var(--space-5);
+  border: 2px dashed var(--gentian);
+  border-radius: var(--radius-control);
+}
+
+.panelHeader {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-3);
+  align-items: center;
+  justify-content: space-between;
+}
+
+.source {
+  padding: 0.1em 0.6em;
+  border-radius: var(--radius-tag);
+  background: var(--gentian-wash);
+  color: var(--gentian);
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+
+/* The fallback must never pass for the model: inverted, with a square marker. */
+.source[data-source='RULE_BASED_FALLBACK'] {
+  display: inline-flex;
+  gap: 0.4em;
+  align-items: center;
+  background: var(--ink);
+  color: #fff;
+}
+
+.source[data-source='RULE_BASED_FALLBACK']::before {
+  content: '';
+  width: 0.6em;
+  height: 0.6em;
+  border: 2px solid #fff;
+}
+
+.advisory {
+  color: var(--ink-2);
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.fallbackNote {
+  padding: var(--space-2) var(--space-3);
+  border-left: 4px solid var(--ink);
+  background: var(--sheet-tint);
+  font-size: var(--text-sm);
+}
+
+.suggestionBody {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-6);
+  margin: 0;
+}
+
+.facts dt {
+  font-size: var(--text-sm);
+  font-weight: 650;
+  color: var(--ink-2);
+}
+
+.facts dd {
+  margin: var(--space-1) 0 0;
+  font-weight: 650;
+}
+
+.block {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.block h3 {
+  font-size: var(--text-md);
+}
+
+.redFlags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: var(--space-1) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.redFlags li {
+  padding: 0.1em 0.6em;
+  border: 1.5px solid var(--urgent);
+  border-radius: var(--radius-tag);
+  color: var(--urgent);
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+
+/* ---- Forms -------------------------------------------------------------------------- */
+
+.form {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.priorityGroup {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.priorityGroup legend {
+  margin-bottom: var(--space-2);
+  padding: 0;
+}
+
+.priorityOption {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-3);
+  align-items: center;
+  min-height: 3rem;
+  padding: var(--space-2) var(--space-3);
+  border: 1.5px solid var(--ink-3);
+  border-radius: var(--radius-control);
+  cursor: pointer;
+}
+
+.priorityOption:hover {
+  border-color: var(--ink);
+}
+
+.priorityOption:has(input:checked) {
+  border-color: var(--gentian);
+  box-shadow: inset 0 0 0 1.5px var(--gentian);
+  background: var(--gentian-wash);
+}
+
+.priorityOption input {
+  width: 1.15rem;
+  height: 1.15rem;
+  margin: 0;
+  accent-color: var(--gentian);
+}
+
+.meaning {
+  color: var(--ink-2);
+  font-size: var(--text-sm);
+}
+
+.suggestedMark {
+  margin-left: auto;
+  padding: 0 0.5em;
+  border: 1.5px dashed var(--gentian);
+  border-radius: var(--radius-tag);
+  color: var(--gentian);
+  font-size: var(--text-xs);
+  font-weight: 700;
+}
+
+.changeHint {
+  padding: var(--space-2) var(--space-3);
+  border-left: 4px solid var(--gentian);
+  background: var(--gentian-wash);
+  font-size: var(--text-sm);
+}
+
+.dateInput {
+  max-width: 18rem;
+}
+
+.rejectConfirm {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 2px solid var(--urgent);
+  border-radius: var(--radius-control);
+  background: var(--urgent-wash);
+}
+
+.rejectQuestion {
+  font-weight: 700;
+}

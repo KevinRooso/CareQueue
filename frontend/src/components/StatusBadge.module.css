@@ -1,0 +1,47 @@
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  padding: 0.05em 0.6em 0.05em 0.45em;
+  border: 1.5px solid var(--ink-3);
+  border-radius: 999px;
+  background: var(--sheet);
+  color: var(--ink-2);
+  font-size: var(--text-sm);
+  font-weight: 650;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+.glyph {
+  width: 0.8em;
+  height: 0.8em;
+  flex: none;
+}
+
+.status[data-status='AI_SUGGESTED'] {
+  border-style: dashed;
+  border-color: var(--gentian);
+  color: var(--gentian);
+}
+
+.status[data-status='TRIAGED'] {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+
+.status[data-status='BOOKED'] {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: #fff;
+}
+
+.status[data-status='BOOKED'] .glyph path {
+  stroke: var(--ink);
+}
+
+.status[data-status='REJECTED'] {
+  border-color: var(--rule);
+  background: var(--sheet-tint);
+  color: var(--ink-2);
+}
