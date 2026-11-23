@@ -24,7 +24,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  * never depends on the developer's environment. No network: AI is off, and nothing here calls the model.
  */
 @SpringBootTest(classes = TriageSliceConfig.class, webEnvironment = SpringBootTest.WebEnvironment.NONE,
-		properties = { "GROQ_API_KEY=", "spring.ai.openai.api-key=" })
+		properties = { "GROQ_API_KEY=", "spring.ai.openai.api-key=",
+		"CAREQUEUE_TRIAGE_MODEL=llama-3.3-70b-versatile" })
 class TriageWiringTest {
 
 	@Autowired
