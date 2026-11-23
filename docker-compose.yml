@@ -15,5 +15,25 @@ services:
       timeout: 5s
       retries: 10
 
+  # The whole app (API + React UI) from the repo-root Dockerfile: http://localhost:8080
+  # Compose reads the repo-root .env only to fill in the ${...} values below; the container gets
+  # exactly these variables and nothing else from that file.
+  app:
+    build: .
+    ports:
+      - "127.0.0.1:${APP_PORT:-8080}:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-carequeue}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-carequeue}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      CAREQUEUE_NURSE_PASSWORD: ${CAREQUEUE_NURSE_PASSWORD:?set CAREQUEUE_NURSE_PASSWORD in .env}
+      CAREQUEUE_MANAGER_PASSWORD: ${CAREQUEUE_MANAGER_PASSWORD:?set CAREQUEUE_MANAGER_PASSWORD in .env}
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
+      CAREQUEUE_TRIAGE_MODEL: ${CAREQUEUE_TRIAGE_MODEL:-llama-3.3-70b-versatile}
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-demo}
+
 volumes:
   pgdata:

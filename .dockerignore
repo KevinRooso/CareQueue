@@ -1,0 +1,30 @@
+# Keep the build context small and free of secrets. The Dockerfile only needs frontend/ and backend/;
+# everything else is excluded so it can never end up in an image layer.
+
+# Build output and dependencies (rebuilt inside the image)
+**/node_modules
+**/target
+**/dist
+frontend/coverage
+# The image copies the fresh React build here; never a stale local copy.
+backend/src/main/resources/static
+
+# Secrets and local config
+.env
+.env.*
+!.env.example
+**/.env
+
+# Git, agents, docs, reports, IDEs, other worktrees
+.git
+.github
+.worktrees
+.claude
+.devin
+.idea
+.vscode
+docs
+reports
+evals
+samples
+*.log

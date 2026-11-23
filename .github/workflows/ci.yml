@@ -1,0 +1,102 @@
+# CI: every push to master and every pull request runs the same checks as ./scripts/check.sh,
+# the security scans and a Docker build. Render deploys master only after all of these pass
+# (render.yaml: autoDeployTrigger: checksPass).
+#
+# Every third-party action is pinned to a full commit SHA (a tag can be moved; a SHA cannot),
+# with the release it corresponds to in a comment. Bump them deliberately.
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+# The workflow only reads the repo: no pushes, no releases, no package writes.
+permissions:
+  contents: read
+
+# A newer push to the same branch or PR cancels the run that is still going.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Tests, lint and build (check.sh)
+    runs-on: ubuntu-latest # has Docker, which the Testcontainers integration tests need
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false # no token left in .git/config for later steps
+      - uses: actions/setup-java@d1374f8ac74474200d16ef8ecee22c7ae7a51880 # v6.3.0
+        with:
+          distribution: temurin
+          java-version: '25.0.5+8' # same JDK build as the Docker image
+          cache: maven
+          cache-dependency-path: backend/pom.xml
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '24.22.3' # same Node as the Docker image
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Make scripts executable
+        # Commits made on Windows can store these as non-executable (mode 100644).
+        run: chmod +x scripts/*.sh backend/mvnw
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci --no-audit --no-fund
+      - name: Run all checks
+        run: ./scripts/check.sh
+      - name: Upload JaCoCo coverage report
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: jacoco-report
+          path: backend/target/site/jacoco
+          if-no-files-found: warn
+          retention-days: 14
+
+  security:
+    name: Security scans (Semgrep, Trivy, Gitleaks)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0 # Gitleaks scans the whole git history, not just the last commit
+          persist-credentials: false
+      - uses: actions/setup-java@d1374f8ac74474200d16ef8ecee22c7ae7a51880 # v6.3.0
+        with:
+          distribution: temurin
+          java-version: '25.0.5+8'
+          cache: maven
+          cache-dependency-path: backend/pom.xml
+      - name: Make scripts executable
+        run: chmod +x scripts/*.sh backend/mvnw
+      - name: Download Maven dependencies
+        # Trivy resolves pom.xml from ~/.m2 (it runs with --offline-scan; Maven Central rate-limits it).
+        working-directory: backend
+        run: ./mvnw -B -q dependency:resolve
+      - name: Run security scans
+        run: ./scripts/security-scan.sh
+      - name: Upload security reports
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: security-reports
+          path: reports/security
+          if-no-files-found: warn
+          retention-days: 14
+
+  docker:
+    name: Docker image builds
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Build the image (not pushed)
+        # Plain docker build (BuildKit is the default builder): no extra third-party actions needed.
+        run: docker build --tag carequeue:ci .

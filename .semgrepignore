@@ -1,0 +1,3 @@
+# Semgrep scans what git tracks: everything .gitignore excludes (node_modules, target, dist, .env,
+# docs/, agent files, reports/) is skipped too, so local-only files never reach a report.
+:include .gitignore
