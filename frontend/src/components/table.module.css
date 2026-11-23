@@ -1,0 +1,77 @@
+/* Shared data-table styles. Dense but not cramped: 16px text, 44px+ rows. */
+
+.wrap {
+  overflow-x: auto;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-control);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-md);
+}
+
+.caption {
+  caption-side: top;
+  padding: var(--space-3) var(--space-4);
+  text-align: left;
+  color: var(--ink-2);
+  font-size: var(--text-sm);
+  border-bottom: 1px solid var(--rule);
+  background: var(--sheet-tint);
+}
+
+.captionStrong {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.table th,
+.table td {
+  padding: var(--space-3) var(--space-4);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.table thead th {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--ink-2);
+  border-bottom: 2px solid var(--ink);
+  white-space: nowrap;
+}
+
+.table tbody tr + tr > * {
+  border-top: 1px solid var(--rule);
+}
+
+.table tbody tr:hover > * {
+  background: var(--sheet-tint);
+}
+
+/* Urgent rows carry a red edge and tint on top of the tag itself. */
+.table tbody tr[data-priority='URGENT'] > * {
+  background: var(--urgent-wash);
+}
+
+.table tbody tr[data-priority='URGENT'] > :first-child {
+  box-shadow: inset 5px 0 0 var(--urgent);
+}
+
+.rowLink {
+  font-weight: 700;
+}
+
+.muted {
+  color: var(--ink-2);
+}
+
+.numeric {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.updating {
+  opacity: 0.6;
+}

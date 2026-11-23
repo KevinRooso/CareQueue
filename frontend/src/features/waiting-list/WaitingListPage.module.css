@@ -1,0 +1,16 @@
+.clinicSelect {
+  min-width: 16rem;
+}
+
+/* The queue position is the first thing the eye lands on in each row. */
+.position {
+  width: 5.5rem;
+  font-size: var(--text-xl);
+  font-weight: 760;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+.patient {
+  font-weight: 400;
+}

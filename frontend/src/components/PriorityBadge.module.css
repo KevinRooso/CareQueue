@@ -1,0 +1,87 @@
+/* Triage tags. Solid = confirmed by a clinician; dashed + hollow shape = AI suggestion. */
+
+.badge {
+  --tag-bg: var(--sheet);
+  --tag-fg: var(--ink);
+  --tag-border: transparent;
+  --cut: var(--sheet);
+
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.1em 0.55em 0.1em 0.45em;
+  border: 2px solid var(--tag-border);
+  border-radius: var(--radius-tag);
+  background: var(--tag-bg);
+  color: var(--tag-fg);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  line-height: 1.45;
+  white-space: nowrap;
+}
+
+.badge[data-size='lg'] {
+  font-size: var(--text-lg);
+  padding: 0.2em 0.7em 0.2em 0.55em;
+}
+
+.shape {
+  width: 1em;
+  height: 1em;
+  flex: none;
+  overflow: visible;
+}
+
+.cut {
+  stroke: var(--cut);
+}
+
+.cutDot {
+  fill: var(--cut);
+}
+
+/* Confirmed */
+
+.badge[data-variant='confirmed'][data-priority='URGENT'] {
+  --tag-bg: var(--urgent);
+  --tag-fg: #fff;
+  --tag-border: var(--urgent);
+  --cut: var(--urgent);
+  font-weight: 800;
+  box-shadow: 0 0 0 2px var(--sheet), 0 0 0 3px var(--urgent);
+}
+
+.badge[data-variant='confirmed'][data-priority='SOON'] {
+  --tag-bg: var(--soon);
+  --tag-fg: var(--ink);
+  --tag-border: var(--soon);
+}
+
+.badge[data-variant='confirmed'][data-priority='ROUTINE'] {
+  --tag-bg: var(--routine-wash);
+  --tag-fg: var(--routine);
+  --tag-border: var(--routine-wash);
+}
+
+/* Suggested (advisory) */
+
+.badge[data-variant='suggested'] {
+  border-style: dashed;
+}
+
+.badge[data-variant='suggested'][data-priority='URGENT'] {
+  --tag-fg: var(--urgent);
+  --tag-border: var(--urgent);
+  --cut: var(--urgent);
+}
+
+.badge[data-variant='suggested'][data-priority='SOON'] {
+  --tag-fg: var(--soon-ink);
+  --tag-border: var(--soon-ink);
+  --cut: var(--soon-ink);
+}
+
+.badge[data-variant='suggested'][data-priority='ROUTINE'] {
+  --tag-fg: var(--routine);
+  --tag-border: var(--routine);
+}

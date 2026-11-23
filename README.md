@@ -66,6 +66,23 @@ export CAREQUEUE_MANAGER_PASSWORD=local-manager-pw
 
 All data is synthetic. Users: `nurse` → `CLINICIAN`, `manager` → `ADMIN` (implies `CLINICIAN`).
 
+## Run the UI (dev)
+
+Start the backend as described above (it listens on port 8080), then in a second terminal:
+
+```bash
+cd frontend && npm install && npm run dev
+```
+
+Open http://localhost:5173 and log in as `nurse` (clinician) or `manager` (admin) with the
+passwords from your `.env` (`CAREQUEUE_NURSE_PASSWORD` / `CAREQUEUE_MANAGER_PASSWORD`).
+The Vite dev server proxies `/api` (and `/v3`, `/swagger-ui`) to the backend, so the browser
+stays on one origin and no CORS setup is needed.
+
+Credentials are kept in memory only, never in browser storage, so reloading the page logs you
+out. This is deliberate: a stored Basic credential would be a long-lived password that any
+script on the page could read.
+
 ## Project layout
 ```
 backend/    Spring Boot application (Maven wrapper: ./mvnw)
