@@ -1,6 +1,7 @@
 package com.carequeue.common.web;
 
 import com.carequeue.common.error.BadSortException;
+import com.carequeue.common.error.InvalidMessageException;
 import com.carequeue.common.error.NotFoundException;
 import com.carequeue.common.error.StaleVersionException;
 import com.carequeue.referral.domain.InvalidStatusTransitionException;
@@ -69,6 +70,21 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		log.warn("Data integrity violation (constraint={})", constraint);
 		return problem(HttpStatus.CONFLICT, "Data conflict",
 				"The request conflicts with existing data.");
+	}
+
+	@ExceptionHandler(InvalidMessageException.class)
+	ProblemDetail handleInvalidMessage(InvalidMessageException ex) {
+		ProblemDetail pd = problem(HttpStatus.UNPROCESSABLE_ENTITY, "Invalid referral message",
+				ex.getMessage());
+		if (!ex.getViolations().isEmpty()) {
+			pd.setProperty("errors", ex.getViolations().stream()
+					.map(v -> Map.of("field", v.field(), "message", v.message()))
+					.toList());
+		}
+		if (ex.getDeadLetterId() != null) {
+			pd.setProperty("deadLetterId", ex.getDeadLetterId());
+		}
+		return pd;
 	}
 
 	@ExceptionHandler({PropertyReferenceException.class, BadSortException.class})
