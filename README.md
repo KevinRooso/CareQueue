@@ -34,6 +34,17 @@ cd frontend && npm install && cd ..
 
 Configuration comes from environment variables only; see [`.env.example`](.env.example). Never commit a real `.env`.
 
+### Run locally
+
+```bash
+cp .env.example .env          # set POSTGRES_PASSWORD (and GROQ_API_KEY later)
+docker compose up -d postgres
+export SPRING_DATASOURCE_PASSWORD=...   # same value as POSTGRES_PASSWORD
+cd backend && ./mvnw spring-boot:run -Dspring-boot.run.profiles=demo
+```
+
+The `demo` profile seeds **25 synthetic referrals** (all statuses, all three reference clinics) on first start — perfect for poking at the database. Re-running is a no-op.
+
 ## Project layout
 ```
 backend/    Spring Boot application (Maven wrapper: ./mvnw)
