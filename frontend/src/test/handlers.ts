@@ -10,7 +10,7 @@ import type {
   ReferralSummary,
   WaitingListEntry,
 } from '../api/types'
-import { CLINICS, USERS, db, findReferral } from './db'
+import { CLINICS, USERS, db, findReferral, referralHistory } from './db'
 
 /** Same origin as the app under test (jsdom's location). */
 export const api = (path: string) => `${window.location.origin}/api${path}`
@@ -160,6 +160,15 @@ export const handlers = [
     const referral = findReferral(Number(params.id))
     return referral
       ? HttpResponse.json(referral)
+      : problem(404, 'Not found', `Referral ${String(params.id)} not found`)
+  }),
+
+  http.get(api('/referrals/:id/history'), ({ request, params }) => {
+    const user = requireRole(request, 'ADMIN')
+    if (user instanceof Response) return user
+    const history = referralHistory(Number(params.id))
+    return history
+      ? HttpResponse.json(history)
       : problem(404, 'Not found', `Referral ${String(params.id)} not found`)
   }),
 

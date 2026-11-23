@@ -12,6 +12,7 @@ import type {
   Problem,
   ReferralDetail,
   ReferralFilters,
+  ReferralRevision,
   ReferralSummary,
   RejectReferralRequest,
   WaitingListEntry,
@@ -203,6 +204,10 @@ export const api = {
 
   getReferral(id: number, signal?: AbortSignal): Promise<ReferralDetail> {
     return request<ReferralDetail>(`/referrals/${id}`, { signal })
+  },
+
+  getReferralHistory(id: number, signal?: AbortSignal): Promise<ReferralRevision[]> {
+    return request<ReferralRevision[]>(`/referrals/${id}/history`, { signal })
   },
 
   requestTriageSuggestion(id: number): Promise<ReferralDetail> {

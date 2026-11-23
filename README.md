@@ -66,6 +66,13 @@ export CAREQUEUE_MANAGER_PASSWORD=local-manager-pw
 
 All data is synthetic. Users: `nurse` → `CLINICIAN`, `manager` → `ADMIN` (implies `CLINICIAN`).
 
+## Observability
+
+- **Request ids:** every response has an `X-Request-Id` header — send your own or get a generated UUID; it shows up in every log line and in problem+json bodies.
+- **Health:** `GET /actuator/health` is public (`{"status":"UP"}`); `/actuator/health/liveness` and `/readiness` are the probes. `/actuator/info` and `/actuator/metrics` need `manager` — try `/actuator/metrics/carequeue.imports`.
+- **Change history (US-9):** `GET /api/referrals/{id}/history` as `manager` shows every change to a referral — who, when, and `field: from → to` — powered by Envers.
+- **SQL debugging:** run with the `sql` profile (`-Dspring-boot.run.profiles=demo,sql`) to see every statement plus Hibernate statistics.
+
 ## Run the UI (dev)
 
 Start the backend as described above (it listens on port 8080), then in a second terminal:

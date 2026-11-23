@@ -183,6 +183,27 @@ describe('referral detail', () => {
     expect(screen.getByText(/A clinic manager books the appointment/)).toBeInTheDocument()
   })
 
+  it('shows the change history to a manager', async () => {
+    renderApp('/referrals/103', { as: 'manager' })
+    await screen.findByRole('heading', { level: 1, name: 'Jamie Placeholder' })
+
+    const history = await screen.findByRole('region', { name: 'History' })
+    const rows = within(history).getAllByRole('listitem')
+    expect(rows.length).toBeGreaterThan(0)
+    expect(within(history).getByText('system')).toBeInTheDocument()
+    expect(within(history).getByText(/created the referral/)).toBeInTheDocument()
+    expect(within(history).getAllByText(/Status/).length).toBeGreaterThan(0)
+    expect(within(history).getByText(/Confirmed priority/)).toBeInTheDocument()
+    expect(within(history).getAllByRole('time').length).toBeGreaterThan(0)
+  })
+
+  it('hides the change history from a clinician', async () => {
+    renderApp('/referrals/103', { as: 'nurse' })
+    await screen.findByRole('heading', { level: 1, name: 'Jamie Placeholder' })
+
+    expect(screen.queryByRole('region', { name: 'History' })).not.toBeInTheDocument()
+  })
+
   it('explains a referral that does not exist', async () => {
     db.referrals = db.referrals.filter((r) => r.id !== 101)
     renderApp('/referrals/101', { as: 'nurse' })

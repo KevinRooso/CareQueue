@@ -61,11 +61,29 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
 
+logging:
+  pattern:
+    correlation: "[%X{requestId:-}] "
+
 management:
   endpoints:
     web:
       exposure:
-        include: health,metrics
+        include: health,info,metrics
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: when-authorized
+      roles: ADMIN
+  info:
+    env:
+      enabled: true
+
+info:
+  app:
+    name: CareQueue
+    description: Synthetic GP referral and clinic waiting-list manager
 
 carequeue:
   security:

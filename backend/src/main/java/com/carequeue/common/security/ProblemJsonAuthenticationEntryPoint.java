@@ -1,8 +1,10 @@
 package com.carequeue.common.security;
 
+import com.carequeue.common.web.RequestIdFilter;
 import tools.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ProblemDetail;
@@ -30,6 +32,10 @@ public class ProblemJsonAuthenticationEntryPoint implements AuthenticationEntryP
 		ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED,
 				"Authentication is required for this endpoint.");
 		problem.setTitle("Unauthorized");
+		String requestId = MDC.get(RequestIdFilter.MDC_KEY);
+		if (requestId != null) {
+			problem.setProperty(RequestIdFilter.MDC_KEY, requestId);
+		}
 		response.setStatus(HttpStatus.UNAUTHORIZED.value());
 		response.setContentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE);
 		objectMapper.writeValue(response.getWriter(), problem);

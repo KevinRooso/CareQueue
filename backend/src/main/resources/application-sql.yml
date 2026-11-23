@@ -1,0 +1,14 @@
+# Try-it-yourself SQL debugging profile: run with
+#   ./mvnw spring-boot:run -Dspring-boot.run.profiles=demo,sql
+# Logs every SQL statement and enables Hibernate statistics (per-session
+# query counts) so you can watch the N+1 disappear.
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.orm.statistics: debug
+
+spring:
+  jpa:
+    properties:
+      hibernate:
+        generate_statistics: true
