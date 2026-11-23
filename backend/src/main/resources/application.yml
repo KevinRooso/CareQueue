@@ -1,3 +1,15 @@
 spring:
   application:
     name: carequeue
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/carequeue}
+    username: ${SPRING_DATASOURCE_USERNAME:carequeue}
+    password: ${SPRING_DATASOURCE_PASSWORD:}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      org.hibernate.envers.audit_table_suffix: _aud
+      org.hibernate.envers.revision_field_name: rev
+      org.hibernate.envers.revision_type_field_name: revtype
