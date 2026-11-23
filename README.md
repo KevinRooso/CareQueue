@@ -62,6 +62,7 @@ export CAREQUEUE_MANAGER_PASSWORD=local-manager-pw
 - **Swagger UI:** http://localhost:8080/swagger-ui.html — click **Authorize** and log in as `nurse` (clinician) or `manager` (admin), then "Try it out" on any endpoint. The OpenAPI JSON is at `/v3/api-docs`.
 - **The whole flow in Swagger:** authorize as `nurse` → `POST /api/referrals/{id}/triage-suggestion` on a RECEIVED referral → `POST /api/referrals/{id}/triage` with the `version` from the response → re-authorize as `manager` → `POST /api/referrals/{id}/appointment`. Then `GET /api/waiting-list?clinicId=1` no longer shows it — it's booked.
 - **curl:** `curl -u nurse:local-nurse-pw 'http://localhost:8080/api/waiting-list?clinicId=1'`
+- **Import a referral** (as manager): `curl -u manager:local-manager-pw -X POST http://localhost:8080/api/referrals/import -H 'Content-Type: application/json' --data-binary @samples/referral-sample.json` → `201` + `{id, created:true}`; run it again and you get `200` + `{id, created:false}` — imports are idempotent on `externalRef`. The XML sample works the same way with `-H 'Content-Type: application/xml' --data-binary @samples/referral-sample.xml`.
 
 All data is synthetic. Users: `nurse` → `CLINICIAN`, `manager` → `ADMIN` (implies `CLINICIAN`).
 
