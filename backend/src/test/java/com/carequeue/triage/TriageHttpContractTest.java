@@ -41,7 +41,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 				"spring.ai.openai.api-key=test-key-not-real",
 				"spring.ai.openai.timeout=500ms",
 				"carequeue.triage.retry.max-retries=2",
-				"carequeue.triage.retry.delay=1ms" })
+				"carequeue.triage.retry.delay=1ms",
+				"CAREQUEUE_TRIAGE_MODEL=llama-3.3-70b-versatile" })
 class TriageHttpContractTest {
 
 	private static final FakeChatCompletions SERVER = FakeChatCompletions.start();

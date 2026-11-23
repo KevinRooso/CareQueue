@@ -39,9 +39,14 @@ Configuration comes from environment variables only; see [`.env.example`](.env.e
 ```bash
 cp .env.example .env          # set POSTGRES_PASSWORD (and GROQ_API_KEY later)
 docker compose up -d postgres
-export SPRING_DATASOURCE_PASSWORD=...   # same value as POSTGRES_PASSWORD
 cd backend && ./mvnw spring-boot:run -Dspring-boot.run.profiles=demo
 ```
+
+A repo-root `.env` (copied from `.env.example`) is read automatically when the app runs
+from `backend/` — so once it's filled in, the `cd` line is all you need. Prefer not
+to use a file? Export `SPRING_DATASOURCE_PASSWORD` (same value as
+`POSTGRES_PASSWORD`) and the two `CAREQUEUE_*_PASSWORD` vars instead; environment
+variables beat `.env`.
 
 The `demo` profile seeds **25 synthetic referrals** (all statuses, all three reference clinics) on first start — perfect for poking at the database. Re-running is a no-op.
 
@@ -55,6 +60,7 @@ export CAREQUEUE_MANAGER_PASSWORD=local-manager-pw
 ```
 
 - **Swagger UI:** http://localhost:8080/swagger-ui.html — click **Authorize** and log in as `nurse` (clinician) or `manager` (admin), then "Try it out" on any endpoint. The OpenAPI JSON is at `/v3/api-docs`.
+- **The whole flow in Swagger:** authorize as `nurse` → `POST /api/referrals/{id}/triage-suggestion` on a RECEIVED referral → `POST /api/referrals/{id}/triage` with the `version` from the response → re-authorize as `manager` → `POST /api/referrals/{id}/appointment`. Then `GET /api/waiting-list?clinicId=1` no longer shows it — it's booked.
 - **curl:** `curl -u nurse:local-nurse-pw 'http://localhost:8080/api/waiting-list?clinicId=1'`
 
 All data is synthetic. Users: `nurse` → `CLINICIAN`, `manager` → `ADMIN` (implies `CLINICIAN`).
