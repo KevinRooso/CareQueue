@@ -1,0 +1,8 @@
+# Test-only safety net. Spring Boot loads classpath:/config/application.yml on top of the main
+# application.yml, so every test context starts with a blank AI key: no test can reach Groq, even if
+# GROQ_API_KEY is set in the environment or in the repo-root .env.
+# Only TriageEvalTest (@Tag("eval")) opts back in with spring.ai.openai.api-key=${GROQ_API_KEY:}.
+spring:
+  ai:
+    openai:
+      api-key: ""
