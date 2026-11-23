@@ -1,0 +1,7 @@
+{
+  "externalRef": "GP-2026-000481",
+  "referringGp": "Dr. A. Byrne, Riverside Medical Centre",
+  "clinicCode": "GASTRO",
+  "patient": { "mrn": "MRN-000481", "firstName": "Sam", "lastName": "Test", "dateOfBirth": "1968-04-12" },
+  "clinicalNotes": "58-year-old with 6 weeks of change in bowel habit and 5kg unintentional weight loss. Iron deficiency anaemia on bloods."
+}

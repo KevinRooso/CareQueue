@@ -1,0 +1,27 @@
+.env
+.env.*
+!.env.example
+reports/
+backend/target/
+frontend/node_modules/
+frontend/dist/
+docs/
+.claude/
+.idea/
+.vscode/
+*.log
+.DS_Store
+.devin/config.local.json
+.claude/settings.local.json
+frontend/coverage/
+
+# Personal learning notes (glossary, walkthroughs, milestone lessons) - kept local, never published
+docs/learn/
+
+# Agent-only files (rules, permissions, hooks, build prompts) - kept local, never published
+.devin/
+AGENTS.md
+CLAUDE.md
+SETUP.md
+.github/copilot-instructions.md
+scripts/hooks/

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Missing clinicCode and an unclosed tag: should return 422 and land in dead letters -->
+<referral externalRef="GP-2026-000483">
+  <referringGp>Dr. P. Kelly, Northside Clinic</referringGp>
+  <patient mrn="MRN-000483">
+    <firstName>Jo</firstName>
+  <clinicalNotes>Test of a malformed message.</clinicalNotes>
+</referral>

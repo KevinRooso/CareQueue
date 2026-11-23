@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<referral externalRef="GP-2026-000482">
+  <referringGp>Dr. C. Walsh, Harbour Family Practice</referringGp>
+  <clinicCode>DERMATOLOGY</clinicCode>
+  <patient mrn="MRN-000482">
+    <firstName>Alex</firstName>
+    <lastName>Sample</lastName>
+    <dateOfBirth>1990-09-30</dateOfBirth>
+  </patient>
+  <clinicalNotes>Long-standing mild eczema on both hands, managed with emollients. Requesting review of treatment options.</clinicalNotes>
+</referral>
